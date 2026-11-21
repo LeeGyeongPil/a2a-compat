@@ -255,7 +255,7 @@ flowchart LR
 | `-32009` version not supported | The server only supports 1.0 and got a 0.3 call | Same as above in the other direction: use the proxy |
 | `ListTasks` refused with `-32004` | 0.3 has no method to list tasks | Use `GetTask` per task ID |
 | Exit code 2 from `check` | Wrong usage, missing input, or the agent is unreachable | Check the URL and that the agent runs |
-| `Unhandled error ... VersionNotSupportedError` in the logs during `npm test` | The official strict 1.0 SDK server logs it when it receives a call without a header | Expected; it is the SDK's own log, not a test failure |
+| `Unhandled error ... VersionNotSupportedError` in the logs during `npm run test:interop` | The official strict 1.0 SDK server logs it when it receives a call without a header | Expected; it is the SDK's own log, not a test failure |
 
 ## Limitations
 
@@ -265,8 +265,14 @@ Only the JSON-RPC binding is covered. REST and gRPC bindings, push-notification 
 
 ```bash
 npm install
-npm test        # builds, then runs 107 tests; no network or keys needed
+npm test             # builds, then runs the default suite (what CI runs); no network or keys needed
+npm run test:e2e     # CLI child processes, signals, EPIPE, stream cut-offs, timers (local)
+npm run test:interop # official @a2a-js/sdk 1.3.0 and 0.3.14 clients and servers + express (local)
+npm run test:all     # all three suites
+npm run ci:local     # runs the same steps as the CI workflow; starts with `npm ci`, which reinstalls node_modules
 ```
+
+CI runs only the default suite, on Node.js 22. Run `npm run test:all` before a release and `npm run test:interop` whenever you bump an SDK version.
 
 Report bugs and ideas as issues. Changes are listed in [CHANGELOG.md](CHANGELOG.md).
 

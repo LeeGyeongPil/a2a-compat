@@ -255,7 +255,7 @@ flowchart LR
 | `-32009` 버전 미지원 | 서버가 1.0 만 지원하는데 0.3 호출이 옴 | 반대 방향으로 위와 같음: 프록시 사용 |
 | `ListTasks` 가 `-32004` 로 거부됨 | 0.3 에는 작업 목록 메서드가 없음 | 작업 ID 별 `GetTask` 사용 |
 | `check` 가 종료 코드 2 | 사용법 오류, 입력 없음, 또는 에이전트에 닿지 못함 | URL 과 에이전트 실행 여부 확인 |
-| `npm test` 중 로그에 `Unhandled error ... VersionNotSupportedError` | 공식 엄격 1.0 SDK 서버가 헤더 없는 호출을 받으면 남기는 로그 | 정상입니다. SDK 자체 로그이며 테스트 실패가 아님 |
+| `npm run test:interop` 중 로그에 `Unhandled error ... VersionNotSupportedError` | 공식 엄격 1.0 SDK 서버가 헤더 없는 호출을 받으면 남기는 로그 | 정상입니다. SDK 자체 로그이며 테스트 실패가 아님 |
 
 ## 한계
 
@@ -265,8 +265,14 @@ JSON-RPC 바인딩만 다룹니다. REST·gRPC 바인딩, 푸시 알림 설정 �
 
 ```bash
 npm install
-npm test        # 빌드 후 테스트 107개 실행, 네트워크·키 불필요
+npm test             # 빌드 후 기본 스위트 실행(CI 가 돌리는 것), 네트워크·키 불필요
+npm run test:e2e     # CLI 자식 프로세스·시그널·EPIPE·스트림 끊김·타이머(로컬)
+npm run test:interop # 공식 @a2a-js/sdk 1.3.0·0.3.14 클라이언트·서버 + express(로컬)
+npm run test:all     # 세 스위트 모두
+npm run ci:local     # CI 워크플로와 같은 단계를 실행. `npm ci` 로 시작하므로 node_modules 를 다시 설치함
 ```
+
+CI 는 Node.js 22 에서 기본 스위트만 돌립니다. 릴리스 전에는 `npm run test:all`, SDK 버전을 올릴 때는 `npm run test:interop` 을 돌려 주세요.
 
 버그·제안은 이슈로 남겨 주세요. 변경 기록은 [CHANGELOG.md](CHANGELOG.md).
 
