@@ -170,7 +170,13 @@ test('a client that disconnects mid-stream makes the proxy close the upstream st
   const first = new TextDecoder().decode((await reader.read()).value);
   assert.match(first, /TASK_STATE_WORKING/);
   ac.abort(); // 클라이언트가 떠난다
-  await Promise.race([upstreamClosed, new Promise((_, rej) => setTimeout(() => rej(new Error('upstream stream was not closed')), 5000))]);
+  // 기다림 타이머는 끝나면 지운다(남겨 두면 테스트 프로세스가 5초 더 살아 있다).
+  let guard: NodeJS.Timeout | undefined;
+  try {
+    await Promise.race([upstreamClosed, new Promise((_, rej) => (guard = setTimeout(() => rej(new Error('upstream stream was not closed')), 5000)))]);
+  } finally {
+    clearTimeout(guard);
+  }
 });
 
 test('stream idle timeout closes a silent upstream stream', async () => {

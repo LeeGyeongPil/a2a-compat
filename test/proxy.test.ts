@@ -139,7 +139,9 @@ test('CLI proxy logs each translation and shuts down cleanly on SIGINT (exit 0)'
   let out = '';
   child.stdout.on('data', (d) => (out += d));
   child.stderr.on('data', (d) => (out += d));
-  const exited = new Promise<number | null>((r) => child.on('exit', (code) => r(code)));
+  // 'exit' 는 stdout 의 마지막 데이터보다 먼저 올 수 있다(Linux 에서 "proxy stopped" 를 놓친다).
+  // 'close' 는 프로세스가 끝나고 stdio 까지 모두 닫힌 뒤에 온다.
+  const exited = new Promise<number | null>((r) => child.on('close', (code) => r(code)));
   try {
     const deadline = Date.now() + 15_000;
     while (!out.includes('Ctrl+C') && Date.now() < deadline) await new Promise((r) => setTimeout(r, 50));
