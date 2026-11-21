@@ -1,0 +1,13 @@
+{
+  "name": "signed-agent",
+  "description": "A signed 0.3 card. Converting it invalidates the signature.",
+  "version": "1.0.0",
+  "protocolVersion": "0.3",
+  "url": "https://agent.example.com/a2a/jsonrpc",
+  "preferredTransport": "JSONRPC",
+  "capabilities": { "streaming": true },
+  "defaultInputModes": ["text"],
+  "defaultOutputModes": ["text"],
+  "skills": [{ "id": "echo", "name": "Echo", "description": "echo", "tags": ["example"] }],
+  "signatures": [{ "protected": "eyJhbGciOiJFUzI1NiJ9", "signature": "c2lnbmF0dXJlLWV4YW1wbGU" }]
+}

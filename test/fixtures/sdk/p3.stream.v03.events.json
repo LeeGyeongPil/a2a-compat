@@ -1,0 +1,56 @@
+[
+  {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+      "kind": "task",
+      "id": "a8b5cb66-b165-46b4-99f1-a7c78f2baae4",
+      "contextId": "8b2a2a57-fe21-4336-8fed-2b6643300b9d",
+      "status": {
+        "state": "working",
+        "timestamp": "2026-11-21T06:24:46.243Z"
+      },
+      "artifacts": [
+        {
+          "artifactId": "echo",
+          "name": "echo",
+          "parts": [
+            {
+              "kind": "text",
+              "text": "echo: hi"
+            }
+          ]
+        }
+      ],
+      "history": [
+        {
+          "kind": "message",
+          "role": "user",
+          "messageId": "fx-3",
+          "parts": [
+            {
+              "kind": "text",
+              "text": "hi"
+            }
+          ],
+          "contextId": "8b2a2a57-fe21-4336-8fed-2b6643300b9d",
+          "taskId": "a8b5cb66-b165-46b4-99f1-a7c78f2baae4"
+        }
+      ]
+    }
+  },
+  {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "result": {
+      "kind": "status-update",
+      "taskId": "a8b5cb66-b165-46b4-99f1-a7c78f2baae4",
+      "contextId": "8b2a2a57-fe21-4336-8fed-2b6643300b9d",
+      "final": true,
+      "status": {
+        "state": "completed",
+        "timestamp": "2026-11-21T06:24:46.243Z"
+      }
+    }
+  }
+]

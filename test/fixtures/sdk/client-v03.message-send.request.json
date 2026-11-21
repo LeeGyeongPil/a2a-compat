@@ -1,0 +1,30 @@
+{
+  "headers": {
+    "a2a-version": null,
+    "content-type": "application/json"
+  },
+  "body": {
+    "jsonrpc": "2.0",
+    "method": "message/send",
+    "params": {
+      "message": {
+        "kind": "message",
+        "role": "user",
+        "messageId": "fx-1",
+        "parts": [
+          {
+            "kind": "text",
+            "text": "hi"
+          }
+        ]
+      },
+      "configuration": {
+        "blocking": true,
+        "acceptedOutputModes": [
+          "text"
+        ]
+      }
+    },
+    "id": 1
+  }
+}

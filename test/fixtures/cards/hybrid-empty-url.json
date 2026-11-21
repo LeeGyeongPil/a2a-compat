@@ -1,0 +1,16 @@
+{
+  "name": "empty-url-hybrid",
+  "description": "A hybrid card whose top-level url is empty (reported for some --card-compat outputs).",
+  "version": "1.0.0",
+  "url": "",
+  "preferredTransport": "JSONRPC",
+  "protocolVersion": "0.3",
+  "capabilities": { "streaming": true },
+  "defaultInputModes": ["text"],
+  "defaultOutputModes": ["text"],
+  "skills": [{ "id": "echo", "name": "Echo", "description": "echo", "tags": ["example"] }],
+  "supportedInterfaces": [
+    { "url": "", "protocolBinding": "JSONRPC", "protocolVersion": "1.0" },
+    { "url": "", "protocolBinding": "JSONRPC", "protocolVersion": "0.3" }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "v1-strict SendMessage no header": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "error": {
+      "code": -32009,
+      "message": "The requested A2A protocol version '0.3' is not supported. Supported versions: 1.0",
+      "data": [
+        {
+          "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+          "reason": "VERSION_NOT_SUPPORTED",
+          "domain": "a2a-protocol.org"
+        }
+      ]
+    }
+  },
+  "v1-compat SendMessage no header": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "error": {
+      "code": -32601,
+      "message": "Method not found: SendMessage"
+    }
+  },
+  "v1-strict GetTask unknown id": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "error": {
+      "code": -32001,
+      "message": "Task not found: does-not-exist",
+      "data": [
+        {
+          "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+          "reason": "TASK_NOT_FOUND",
+          "domain": "a2a-protocol.org"
+        }
+      ]
+    }
+  },
+  "v0.3 tasks/get unknown id": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "error": {
+      "code": -32001,
+      "message": "Task not found: does-not-exist"
+    }
+  },
+  "v0.3 ListTasks": {
+    "jsonrpc": "2.0",
+    "id": 1,
+    "error": {
+      "code": -32601,
+      "message": "Method not found: ListTasks"
+    }
+  }
+}

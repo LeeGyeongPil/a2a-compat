@@ -1,0 +1,26 @@
+# Example: fail the build when your agent stops being reachable by A2A 0.3 or 1.0 clients.
+# Copy to .github/workflows/a2a-compat.yml in your agent's repository and adjust the start step.
+name: a2a-compat
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  compat:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      # Start your agent in the background (replace with your own command and port).
+      - run: npm ci && (npm start &) && npx --yes wait-on http://127.0.0.1:8080/.well-known/agent-card.json
+      # Exit 1 if a 0.3 or 1.0 client cannot connect; the JSON report is kept as an artifact.
+      - run: npx --yes a2a-compat check http://127.0.0.1:8080 --require 0.3,1.0 --json > compat.json
+      - run: npx --yes a2a-compat card validate http://127.0.0.1:8080
+        if: always()
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: a2a-compat-report
+          path: compat.json

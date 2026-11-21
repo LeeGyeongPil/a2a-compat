@@ -1,0 +1,56 @@
+[
+  {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "kind": "task",
+      "id": "472e6c48-8501-4997-b75c-1c2311b661a7",
+      "contextId": "5504b586-7b53-438d-81f6-edc1b6a8e4bd",
+      "status": {
+        "state": "working",
+        "timestamp": "2026-11-21T06:24:46.240Z"
+      },
+      "history": [
+        {
+          "kind": "message",
+          "messageId": "fx-3",
+          "role": "user",
+          "parts": [
+            {
+              "kind": "text",
+              "text": "hi"
+            }
+          ],
+          "contextId": "5504b586-7b53-438d-81f6-edc1b6a8e4bd",
+          "taskId": "472e6c48-8501-4997-b75c-1c2311b661a7"
+        }
+      ],
+      "artifacts": [
+        {
+          "artifactId": "echo",
+          "parts": [
+            {
+              "kind": "text",
+              "text": "echo: hi"
+            }
+          ],
+          "name": "echo"
+        }
+      ]
+    }
+  },
+  {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "kind": "status-update",
+      "taskId": "472e6c48-8501-4997-b75c-1c2311b661a7",
+      "contextId": "5504b586-7b53-438d-81f6-edc1b6a8e4bd",
+      "status": {
+        "state": "completed",
+        "timestamp": "2026-11-21T06:24:46.240Z"
+      },
+      "final": true
+    }
+  }
+]

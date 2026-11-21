@@ -1,0 +1,29 @@
+{
+  "name": "multi-flow-agent",
+  "description": "A 0.3 agent whose OAuth2 scheme declares two flows at once (0.3 allows it, 1.0 keeps one).",
+  "version": "1.4.0",
+  "protocolVersion": "0.3.0",
+  "url": "https://agent.example.com/a2a/jsonrpc",
+  "preferredTransport": "JSONRPC",
+  "capabilities": { "streaming": false, "pushNotifications": false, "stateTransitionHistory": true },
+  "securitySchemes": {
+    "oauth": {
+      "type": "oauth2",
+      "flows": {
+        "authorizationCode": {
+          "authorizationUrl": "https://auth.example.com/authorize",
+          "tokenUrl": "https://auth.example.com/token",
+          "scopes": { "agent:use": "Use the agent" }
+        },
+        "clientCredentials": {
+          "tokenUrl": "https://auth.example.com/token",
+          "scopes": { "agent:use": "Use the agent" }
+        }
+      }
+    }
+  },
+  "security": [{ "oauth": ["agent:use"] }],
+  "defaultInputModes": ["text"],
+  "defaultOutputModes": ["text"],
+  "skills": [{ "id": "echo", "name": "Echo", "description": "echo", "tags": ["example"], "security": [{ "oauth": ["agent:use"] }] }]
+}

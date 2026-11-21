@@ -1,0 +1,27 @@
+{
+  "name": "device-login-agent",
+  "description": "A 1.0 agent whose OAuth2 scheme uses the device code flow (1.0 only).",
+  "version": "2.1.0",
+  "supportedInterfaces": [
+    { "url": "https://agent.example.com/a2a/jsonrpc", "protocolBinding": "JSONRPC", "protocolVersion": "1.0" }
+  ],
+  "capabilities": { "streaming": true, "pushNotifications": false },
+  "securitySchemes": {
+    "deviceLogin": {
+      "oauth2SecurityScheme": {
+        "flows": {
+          "deviceCode": {
+            "deviceAuthorizationUrl": "https://auth.example.com/device",
+            "tokenUrl": "https://auth.example.com/token",
+            "scopes": { "agent:use": "Use the agent" }
+          }
+        }
+      }
+    },
+    "apiKey": { "apiKeySecurityScheme": { "name": "X-API-Key", "location": "header" } }
+  },
+  "securityRequirements": [{ "schemes": { "deviceLogin": { "list": ["agent:use"] } } }],
+  "defaultInputModes": ["text"],
+  "defaultOutputModes": ["text"],
+  "skills": [{ "id": "echo", "name": "Echo", "description": "echo", "tags": ["example"] }]
+}

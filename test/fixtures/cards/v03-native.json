@@ -1,0 +1,28 @@
+{
+  "name": "sdk-v03-native",
+  "description": "official SDK 0.3.14 test agent",
+  "version": "1.0.0",
+  "protocolVersion": "0.3.0",
+  "url": "https://agent.example.com/a2a/jsonrpc",
+  "preferredTransport": "JSONRPC",
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": false
+  },
+  "defaultInputModes": [
+    "text"
+  ],
+  "defaultOutputModes": [
+    "text"
+  ],
+  "skills": [
+    {
+      "id": "echo",
+      "name": "Echo",
+      "description": "echo",
+      "tags": [
+        "test"
+      ]
+    }
+  ]
+}

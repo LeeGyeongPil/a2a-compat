@@ -1,0 +1,36 @@
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "id": "c92e04ab-a052-4933-a04f-77a561e41ba3",
+    "contextId": "aa133220-1911-4f07-ab4a-c300e809fb3e",
+    "status": {
+      "state": "TASK_STATE_COMPLETED",
+      "timestamp": "2026-11-21T06:24:46.226Z"
+    },
+    "artifacts": [
+      {
+        "artifactId": "echo",
+        "name": "echo",
+        "parts": [
+          {
+            "text": "echo: hi"
+          }
+        ]
+      }
+    ],
+    "history": [
+      {
+        "messageId": "fx-2",
+        "contextId": "aa133220-1911-4f07-ab4a-c300e809fb3e",
+        "taskId": "c92e04ab-a052-4933-a04f-77a561e41ba3",
+        "role": "ROLE_USER",
+        "parts": [
+          {
+            "text": "hi"
+          }
+        ]
+      }
+    ]
+  }
+}

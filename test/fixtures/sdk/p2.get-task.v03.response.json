@@ -1,0 +1,40 @@
+{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "result": {
+    "kind": "task",
+    "id": "c92e04ab-a052-4933-a04f-77a561e41ba3",
+    "contextId": "aa133220-1911-4f07-ab4a-c300e809fb3e",
+    "status": {
+      "state": "completed",
+      "timestamp": "2026-11-21T06:24:46.226Z"
+    },
+    "history": [
+      {
+        "kind": "message",
+        "messageId": "fx-2",
+        "role": "user",
+        "parts": [
+          {
+            "kind": "text",
+            "text": "hi"
+          }
+        ],
+        "contextId": "aa133220-1911-4f07-ab4a-c300e809fb3e",
+        "taskId": "c92e04ab-a052-4933-a04f-77a561e41ba3"
+      }
+    ],
+    "artifacts": [
+      {
+        "artifactId": "echo",
+        "parts": [
+          {
+            "kind": "text",
+            "text": "echo: hi"
+          }
+        ],
+        "name": "echo"
+      }
+    ]
+  }
+}

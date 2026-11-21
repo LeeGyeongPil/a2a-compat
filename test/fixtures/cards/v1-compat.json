@@ -1,0 +1,53 @@
+{
+  "name": "sdk-v1-compat",
+  "description": "official SDK 1.3.0 test agent",
+  "version": "1.0.0",
+  "supportedInterfaces": [
+    {
+      "url": "https://agent.example.com/a2a/jsonrpc",
+      "protocolBinding": "JSONRPC",
+      "tenant": "",
+      "protocolVersion": "1.0"
+    },
+    {
+      "url": "https://agent.example.com/a2a/jsonrpc",
+      "protocolBinding": "JSONRPC",
+      "tenant": "",
+      "protocolVersion": "0.3"
+    }
+  ],
+  "capabilities": {
+    "streaming": true,
+    "pushNotifications": false,
+    "extensions": [],
+    "extendedAgentCard": false
+  },
+  "securitySchemes": {},
+  "securityRequirements": [],
+  "defaultInputModes": [
+    "text"
+  ],
+  "defaultOutputModes": [
+    "text"
+  ],
+  "skills": [
+    {
+      "id": "echo",
+      "name": "Echo",
+      "description": "echo",
+      "tags": [
+        "test"
+      ],
+      "examples": [],
+      "inputModes": [
+        "text"
+      ],
+      "outputModes": [
+        "text"
+      ],
+      "securityRequirements": []
+    }
+  ],
+  "documentationUrl": "",
+  "signatures": []
+}
