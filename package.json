@@ -1,0 +1,58 @@
+{
+  "name": "a2a-compat",
+  "version": "0.1.0",
+  "description": "Check, convert and proxy between A2A protocol 0.3 and 1.0 agents: compatibility matrix, agent card converter and a translating JSON-RPC/SSE proxy.",
+  "type": "module",
+  "license": "MIT",
+  "author": "LeeGyeongPil",
+  "keywords": [
+    "a2a",
+    "agent2agent",
+    "agent-card",
+    "json-rpc",
+    "proxy",
+    "compatibility",
+    "migration"
+  ],
+  "bin": {
+    "a2a-compat": "dist/cli/main.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "NOTICE",
+    "README.md",
+    "README.ko.md",
+    "LICENSE",
+    "LICENSE-APACHE-2.0"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && node scripts/copy-assets.mjs",
+    "build:test": "npm run build && tsc -p tsconfig.test.json && node scripts/copy-assets.mjs --test",
+    "test": "npm run build:test && node scripts/run-tests.mjs",
+    "start": "npm run build --silent && node dist/cli/main.js demo",
+    "capture-fixtures": "npm run build && node scripts/capture-fixtures.mjs",
+    "prepublishOnly": "npm test"
+  },
+  "dependencies": {
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.6",
+    "a2a-v03": "npm:@a2a-js/sdk@0.3.14",
+    "a2a-v1": "npm:@a2a-js/sdk@1.3.0",
+    "express": "5.3.0",
+    "typescript": "5.9.3"
+  }
+}
