@@ -2,8 +2,8 @@
 // 그리고 공식 서버 3종에 대한 check 행렬이 목 행렬(AC-4)과 같은지. 전부 localhost.
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { checkEndpoint, createProxy, type ProxyHandle } from '../src/index.js';
-import { EXPECTED, rows } from './helpers/expected.js';
+import { checkEndpoint, createProxy, type ProxyHandle } from '../../src/index.js';
+import { EXPECTED, rows } from '../helpers/expected.js';
 
 // 타입 없는 동적 import: 테스트에서 SDK 의 ts-proto 타입을 따라 쓰지 않으려는 것
 const load = (spec: string): Promise<any> => import(spec);
@@ -17,7 +17,7 @@ before(async () => {
   v1 = await load('a2a-v1');
   v1c = await load('a2a-v1/client');
   o3c = await load('a2a-v03/client');
-  const helpers = await load(new URL('../../test/helpers/sdk-servers.mjs', import.meta.url).href);
+  const helpers = await load(new URL('../../../test/helpers/sdk-servers.mjs', import.meta.url).href);
   servers = await helpers.startSdkServers();
 });
 
