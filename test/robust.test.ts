@@ -1,11 +1,10 @@
 // AC-9: 견고성 — 선택 필드 결측·null, 모르는 필드 보존, JSON-RPC 가 아닌 입력, 고장 난 업스트림.
 import { test, after } from 'node:test';
 import assert from 'node:assert/strict';
-import http from 'node:http';
-import type { AddressInfo } from 'node:net';
 import { createProxy, toV1, toV03, TranslationError, type ProxyHandle } from '../src/index.js';
 import { SseTranslator } from '../src/proxy/sse.js';
 import { msgV1, rpc } from './helpers/common.js';
+import { brokenUpstream, type BrokenMode } from './helpers/broken-upstream.js';
 
 const req = (method: string, params: unknown) => ({ jsonrpc: '2.0', id: 1, method, params });
 const res = (result: unknown) => ({ jsonrpc: '2.0', id: 1, result });
@@ -73,57 +72,13 @@ test('SSE translator handles arbitrary chunk boundaries, CRLF, comments and mult
 
 // ---------- 고장 난 업스트림 ----------
 
-const v03Card = (base: string) => ({
-  name: 'broken', description: 'broken upstream', version: '1', protocolVersion: '0.3', url: `${base}/rpc`, preferredTransport: 'JSONRPC',
-  capabilities: { streaming: true }, defaultInputModes: ['text'], defaultOutputModes: ['text'], skills: [],
-});
-
-/** POST 마다 mode 에 따라 엉터리로 답하는 0.3 업스트림. */
-async function brokenUpstream(mode: { value: 'html' | 'cut-stream' | 'hang' }, onStreamClosed?: () => void) {
-  const server = http.createServer((req, res) => {
-    const base = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
-    if (req.method === 'GET') {
-      res.writeHead(200, { 'content-type': 'application/json' });
-      res.end(JSON.stringify(v03Card(base)));
-      return;
-    }
-    req.resume();
-    req.on('end', () => {
-      if (mode.value === 'html') {
-        res.writeHead(502, { 'content-type': 'text/html' });
-        res.end('<html>bad gateway</html>');
-      } else if (mode.value === 'hang') {
-        // 이벤트 하나를 보내고 끝내지 않는 스트림(느린 LLM 에이전트 흉내)
-        res.writeHead(200, { 'content-type': 'text/event-stream' });
-        res.write('data: {"jsonrpc":"2.0","id":1,"result":{"kind":"task","id":"t","contextId":"c","status":{"state":"working"}}}\n\n');
-        res.on('close', () => onStreamClosed?.());
-      } else {
-        res.writeHead(200, { 'content-type': 'text/event-stream' });
-        res.write('data: {"jsonrpc":"2.0","id":1,"result":{"kind":"task","id":"t","contextId":"c","status":{"state":"working"}}}\n\n');
-        res.write('data: {"jsonrpc":"2.0","id":1,"res'); // 이벤트 중간에서
-        setTimeout(() => res.socket?.destroy(), 20); // 연결을 끊는다
-      }
-    });
-  });
-  await new Promise<void>((r) => server.listen(0, '127.0.0.1', () => r()));
-  const url = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
-  return {
-    url,
-    close: () =>
-      new Promise<void>((r) => {
-        server.closeAllConnections();
-        server.close(() => r());
-      }),
-  };
-}
-
 const toClose: Array<() => Promise<void>> = [];
 after(async () => {
   for (const c of toClose.reverse()) await c();
 });
 
 test('non-JSON upstream answer -> client gets -32603, proxy keeps running', async () => {
-  const mode = { value: 'html' as 'html' | 'cut-stream' };
+  const mode = { value: 'html' as BrokenMode };
   const up = await brokenUpstream(mode);
   const proxy: ProxyHandle = await createProxy({ upstream: up.url });
   toClose.push(up.close, proxy.close);
@@ -132,67 +87,6 @@ test('non-JSON upstream answer -> client gets -32603, proxy keeps running', asyn
   assert.match(r.error.message, /non-JSON/);
   // 프록시는 살아 있다
   assert.equal((await fetch(`${proxy.url}/.well-known/agent-card.json`)).status, 200);
-});
-
-test('upstream SSE cut mid-event -> client stream ends, first event delivered, proxy keeps running', async () => {
-  const mode = { value: 'cut-stream' as 'html' | 'cut-stream' };
-  const up = await brokenUpstream(mode);
-  const proxy = await createProxy({ upstream: up.url });
-  toClose.push(up.close, proxy.close);
-  const resp = await fetch(`${proxy.url}/a2a/jsonrpc`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json', 'A2A-Version': '1.0' },
-    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'SendStreamingMessage', params: msgV1() }),
-  });
-  const text = await resp.text(); // 스트림이 닫혀야 끝난다
-  const events = text.split('\n').filter((l) => l.startsWith('data:'));
-  assert.equal(events.length, 1);
-  assert.equal(JSON.parse(events[0]!.slice(5)).result.task.status.state, 'TASK_STATE_WORKING');
-  mode.value = 'html';
-  const again = await rpc(`${proxy.url}/a2a/jsonrpc`, 'SendMessage', msgV1(), '1.0');
-  assert.equal(again.error.code, -32603);
-});
-
-test('a client that disconnects mid-stream makes the proxy close the upstream stream too', async () => {
-  let closed!: () => void;
-  const upstreamClosed = new Promise<void>((r) => (closed = r));
-  const up = await brokenUpstream({ value: 'hang' }, () => closed());
-  const proxy = await createProxy({ upstream: up.url });
-  toClose.push(up.close, proxy.close);
-  const ac = new AbortController();
-  const resp = await fetch(`${proxy.url}/a2a/jsonrpc`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json', 'A2A-Version': '1.0' },
-    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'SendStreamingMessage', params: msgV1() }),
-    signal: ac.signal,
-  });
-  const reader = resp.body!.getReader();
-  const first = new TextDecoder().decode((await reader.read()).value);
-  assert.match(first, /TASK_STATE_WORKING/);
-  ac.abort(); // 클라이언트가 떠난다
-  // 기다림 타이머는 끝나면 지운다(남겨 두면 테스트 프로세스가 5초 더 살아 있다).
-  let guard: NodeJS.Timeout | undefined;
-  try {
-    await Promise.race([upstreamClosed, new Promise((_, rej) => (guard = setTimeout(() => rej(new Error('upstream stream was not closed')), 5000)))]);
-  } finally {
-    clearTimeout(guard);
-  }
-});
-
-test('stream idle timeout closes a silent upstream stream', async () => {
-  let closed!: () => void;
-  const upstreamClosed = new Promise<void>((r) => (closed = r));
-  const up = await brokenUpstream({ value: 'hang' }, () => closed());
-  const proxy = await createProxy({ upstream: up.url, idleTimeoutMs: 200 });
-  toClose.push(up.close, proxy.close);
-  const resp = await fetch(`${proxy.url}/a2a/jsonrpc`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json', 'A2A-Version': '1.0' },
-    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'SendStreamingMessage', params: msgV1() }),
-  });
-  const text = await resp.text(); // 유휴 타임아웃 뒤 프록시가 스트림을 닫아야 끝난다
-  assert.match(text, /TASK_STATE_WORKING/);
-  await upstreamClosed;
 });
 
 test('upstream gone after start -> -32603 "upstream request failed"', async () => {

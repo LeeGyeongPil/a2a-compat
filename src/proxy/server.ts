@@ -153,7 +153,7 @@ async function discoverUpstream(opts: ProxyOptions) {
   }
   // 카드는 읽었는데 JSON-RPC 주소가 없음 (REST·gRPC 만 있는 카드)
   const noEndpoint = () =>
-    new UnreachableError('The upstream card lists no JSON-RPC endpoint (REST/gRPC are not proxied in M1).', cardUrl, undefined, 'no_jsonrpc_endpoint');
+    new UnreachableError('The upstream card lists no JSON-RPC endpoint (REST and gRPC are not proxied).', cardUrl, undefined, 'no_jsonrpc_endpoint');
   const endpoints: Partial<Record<ProtocolVersion, string>> = {};
   const v1 = jsonRpcUrl(card10, '1.0') ?? jsonRpcUrl(card03, '1.0');
   const v03 = jsonRpcUrl(card03, '0.3') ?? jsonRpcUrl(card10, '0.3');

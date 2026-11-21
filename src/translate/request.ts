@@ -66,7 +66,7 @@ export function requestToV1(req: Obj): Obj {
   if (isV1Method(method) && !isV03Method(method)) return req; // 이미 1.0
   if (!isTranslatableMethod(method)) {
     methodToV1(method); // 모르는 메서드면 여기서 UnsupportedOperationError
-    throw new UnsupportedOperationError(`Method "${method}" is not translated in a2a-compat M1 (push notification configs and the extended card arrive in M2).`);
+    throw new UnsupportedOperationError(`Method "${method}" is not translated by a2a-compat (push notification configs and the extended card are not supported).`);
   }
   const v1Method = methodToV1(method);
   const params = req.params;
@@ -82,13 +82,13 @@ export function requestToV03(req: Obj): Obj {
   const method = String(req.method);
   if (isV03Method(method)) {
     if (!isTranslatableMethod(method)) {
-      throw new UnsupportedOperationError(`Method "${method}" is not translated in a2a-compat M1 (push notification configs and the extended card arrive in M2).`);
+      throw new UnsupportedOperationError(`Method "${method}" is not translated by a2a-compat (push notification configs and the extended card are not supported).`);
     }
     return req; // 이미 0.3
   }
   const v03Method = methodToV03(method); // ListTasks 등은 여기서 던진다
   if (!isTranslatableMethod(v03Method)) {
-    throw new UnsupportedOperationError(`Method "${method}" is not translated in a2a-compat M1 (push notification configs and the extended card arrive in M2).`);
+    throw new UnsupportedOperationError(`Method "${method}" is not translated by a2a-compat (push notification configs and the extended card are not supported).`);
   }
   const out: Obj = { ...req, method: v03Method };
   if (isObj(req.params)) {

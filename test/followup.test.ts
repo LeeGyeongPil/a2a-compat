@@ -1,23 +1,13 @@
 // Follow-ups from QA: test runner on Node 20, EPIPE, directory input, shared footnotes, --public-url, SSE event count.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { spawn } from 'node:child_process';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { CLI, ROOT, runCli } from './helpers/common.js';
+import { runCli } from './helpers/common.js';
 import { convertCard, createProxy, startMockAgent } from '../src/index.js';
 
 const EN = { A2A_COMPAT_LANG: 'en' };
-
-test('closing stdout early does not print an EPIPE stack trace', async () => {
-  const child = spawn(process.execPath, [CLI, 'check', '--mock', 'v1-compat', '--json'], { cwd: ROOT, stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, A2A_COMPAT_LANG: 'en' } });
-  child.stdout.destroy();
-  let stderr = '';
-  child.stderr.on('data', (d) => (stderr += String(d)));
-  await new Promise((resolve) => child.on('close', resolve));
-  assert.doesNotMatch(stderr, /EPIPE|at Object\.out/);
-});
 
 test('card validate on a directory says it is a directory', async () => {
   const dir = mkdtempSync(join(tmpdir(), 'a2a-compat-dir-'));

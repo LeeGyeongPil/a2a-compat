@@ -14,7 +14,7 @@ export const CAUSES = [
   'v1_methods_rejected',
   /** A2A-Version 헤더가 빠지면 서버가 0.3 으로 처리 -> -32009 또는 -32601 로 원인이 가려진다. */
   'missing_version_header',
-  /** 카드에 이 버전의 JSON-RPC 엔드포인트가 없다(REST·gRPC 는 M1 에서 점검하지 않음). */
+  /** 카드에 이 버전의 JSON-RPC 엔드포인트가 없다(REST·gRPC 는 점검하지 않음). */
   'no_jsonrpc_interface',
   /** 엔드포인트에 닿지 못했거나 JSON-RPC 응답이 아니다. */
   'endpoint_unreachable',
