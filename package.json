@@ -1,6 +1,6 @@
 {
   "name": "a2a-compat",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Check, convert and proxy between A2A protocol 0.3 and 1.0 agents: compatibility matrix, agent card converter and a translating JSON-RPC/SSE proxy.",
   "type": "module",
   "license": "MIT",

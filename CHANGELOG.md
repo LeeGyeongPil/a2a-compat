@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.1
+
+- Fix CI: GitHub Actions updated to v6, tests wait for child process `close` instead of `exit`, timers are cleaned up.
+
 ## 0.1.0
 
 First release.
