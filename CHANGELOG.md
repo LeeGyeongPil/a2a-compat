@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.2
+
+- CI hardening: minimal workflow permissions, job and step timeouts, Node 20 and 24 matrix without fail-fast, npm debug log on install failure.
+- `npm test` runner prints the Node version, applies per-test (2 min) and total (8 min) time limits, and reports a timeout or kill signal instead of hanging.
+- No runtime behavior change.
+
 ## 0.1.1
 
 - Fix CI: GitHub Actions updated to v6, tests wait for child process `close` instead of `exit`, timers are cleaned up.
