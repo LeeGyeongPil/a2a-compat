@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.1.3
+
+- Tests split into three suites: `npm test` (default, what CI runs, 98 tests), `npm run test:e2e` (CLI child processes, local) and `npm run test:interop` (official SDK interoperability, local); `npm run test:all` runs all, `npm run ci:local` mirrors the CI workflow.
+- CI: the workflow is now a single job on Node.js 22 (build, then the default suite) with a 15-minute job timeout; the weekly schedule, Node 20/24 matrix and npm debug-log step are removed.
+- Error messages for untranslated methods (push notification configs, extended card) and for REST/gRPC-only upstream cards no longer mention internal milestones; the wording now says these are not supported. Translation behavior is unchanged.
+
 ## 0.1.2
 
 - CI hardening: minimal workflow permissions, job and step timeouts, Node 20 and 24 matrix without fail-fast, npm debug log on install failure.
