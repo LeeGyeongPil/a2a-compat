@@ -6,17 +6,34 @@ on:
   schedule:
     - cron: "17 3 * * 1"   # weekly: catch runtime or dependency drift
   workflow_dispatch:
+permissions:
+  contents: read
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
+      # Let every Node version finish so one failure does not hide the other.
+      fail-fast: false
       matrix:
-        node: [20, lts/*]
+        # 20 = lowest version in package.json "engines", 24 = active LTS line.
+        node: ["20", "24"]
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
           cache: npm
-      - run: npm ci
-      - run: npm test
+          cache-dependency-path: package-lock.json
+      - name: Show versions
+        run: node --version && npm --version
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Show npm debug log (install failed)
+        if: failure()
+        run: tail -n 200 ~/.npm/_logs/*-debug-0.log || true
+      - name: Build and test
+        run: npm test
+        timeout-minutes: 10
+        env:
+          CI: "true"
